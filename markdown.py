@@ -1,78 +1,7 @@
 import os
 
+from decorator import Decorator, LabelProfile, SpaceLabel, EndLabel
 from type import Type
-
-
-class Decorator:
-    """Decorator object
-    """
-
-    @staticmethod
-    def markdown(label: Type = None):
-        def func_wrap(func):
-            def wrap(context, *args, **kwargs):
-                Decorator.__process_main(label, func, context, *args, **kwargs)
-
-            return wrap
-
-        return func_wrap
-
-    @staticmethod
-    def __process_main(label: Type, func, context, *args, **kwargs):
-        if label == Type.IMAGE:
-            text, single, space, end, image = func(context, *args, **kwargs)
-            Decorator.__process_image(context=context, label=label, text=text, single=single, space=space, end=end,
-                                      image=image)
-        else:
-            text, single, space, end = func(context, *args, **kwargs)
-            Decorator.__process_symbol(context=context, label=label, text=text, single=single, space=space, end=end)
-
-    @staticmethod
-    def __process_symbol(label: Type, **kwargs):
-        Decorator.__handle_content(
-            kwargs['context'],                          # handle context
-            Decorator.__handle_text(kwargs['text']),    # handle text
-            label.value if label else "",               # handle label
-            Decorator.__handle_space(kwargs['space']),  # handle space
-            kwargs['single'],                           # handle single
-            Decorator.__handle_end(kwargs['end'])       # handle end
-        )
-
-    @staticmethod
-    def __process_image(label: Type, **kwargs):
-        url, alt, title = kwargs['image']
-        url = url if url else ''
-        alt = alt if alt else ''
-        title = f" \"{title}\"" if title else ''
-        tmp_label = label.value if label else ""
-        tmp_label = tmp_label.replace('REPLACE_ALT', alt, 1) \
-            .replace('REPLACE_URL', url, 1) \
-            .replace(' REPLACE_TITLE', title, 1)
-        Decorator.__handle_content(
-            kwargs['context'],                          # handle context
-            Decorator.__handle_text(kwargs['text']),    # handle text
-            tmp_label,                                  # handle label
-            Decorator.__handle_space(kwargs['space']),  # handle space
-            kwargs['single'],                           # handle single
-            Decorator.__handle_end(kwargs['end'])       # handle end
-        )
-
-    @staticmethod
-    def __handle_content(context, text: str, label: str, space: str, single: bool, end: str) -> None:
-        context.get_content().append(
-            label + space + text + end if single else label + space + text + space + label + end)
-
-    @staticmethod
-    def __handle_text(text: str) -> str:
-        return text if text else ""
-
-    @staticmethod
-    def __handle_space(space: bool) -> str:
-        return Type.SPACE.value if space else Type.NULL.value
-
-    @staticmethod
-    def __handle_end(end: bool) -> str:
-        return 2 * Type.SEP.value if end else Type.NULL.value
 
 
 class Markdown:
@@ -85,9 +14,14 @@ class Markdown:
         self.__export_name = 'export.md'
 
     def __finish(self):
-        self.__content.append(self.__content.pop()[:-1])
+        """set finish label
+        """
+        if len(self.__content):
+            self.__content.append(self.__content.pop()[:-1])
 
     def export(self, export_name: str = 'export.md', *, path: str = os.getcwd(), encoding: str = 'utf-8'):
+        """export to .md file
+        """
         self.__finish()
 
         self.__path = path if path.endswith('/') else path + '/'
@@ -97,100 +31,184 @@ class Markdown:
             f.writelines(self.__content)
 
     def get_content(self):
+        """get content
+        """
         return self.__content
 
     def get_export_path(self):
+        """get export path
+        """
         return self.__path + self.__export_name
 
     @Decorator.markdown(label=Type.NULL)
-    def add_text(self, text: str, *, single: bool = True, space: bool = False, end: bool = True):
+    def add_text(self, text: str, *, tab: int = 0, space: int = 0, count: int = 0, linefeed: int = 2):
         """add text
         """
-        return text, single, space, end
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
 
     @Decorator.markdown(label=Type.H1)
-    def add_h1(self, text: str, *, single: bool = True, space: bool = True, end: bool = True):
+    def add_h1(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
         """add h1 label
         """
-        return text, single, space, end
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
 
     @Decorator.markdown(label=Type.H2)
-    def add_h2(self, text: str, *, single: bool = True, space: bool = True, end: bool = True):
+    def add_h2(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
         """add h2 label
         """
-        return text, single, space, end
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
 
     @Decorator.markdown(label=Type.H3)
-    def add_h3(self, text: str, *, single: bool = True, space: bool = True, end: bool = True):
+    def add_h3(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
         """add h3 label
         """
-        return text, single, space, end
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
 
     @Decorator.markdown(label=Type.H4)
-    def add_h4(self, text: str, *, single: bool = True, space: bool = True, end: bool = True):
+    def add_h4(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
         """add h4 label
         """
-        return text, single, space, end
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
 
     @Decorator.markdown(label=Type.H5)
-    def add_h5(self, text: str, *, single: bool = True, space: bool = True, end: bool = True):
+    def add_h5(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
         """add h5 label
         """
-        return text, single, space, end
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
 
     @Decorator.markdown(label=Type.H6)
-    def add_h6(self, text: str, *, single: bool = True, space: bool = True, end: bool = True):
+    def add_h6(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
         """add h6 label
         """
-        return text, single, space, end
-
-    @Decorator.markdown(label=Type.BOLD)
-    def add_bold(self, text: str, *, single: bool = False, space: bool = False, end: bool = False):
-        """add bold label
-        """
-        return text, single, space, end
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
 
     @Decorator.markdown(label=Type.STRIKETHROUGH)
-    def add_strikethrough(self, text: str, *, single: bool = False, space: bool = False, end: bool = False):
+    def add_strikethrough(self, text: str, *, tab: int = 0, space: int = 0, count: int = 0, linefeed: int = 2):
         """add strikethrough label
         """
-        return text, single, space, end
+        return LabelProfile(
+            single=False, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
+
+    @Decorator.markdown(label=Type.BOLD)
+    def add_bold(self, text: str, *, tab: int = 0, space: int = 0, count: int = 0, linefeed: int = 2):
+        """add bold label
+        """
+        return LabelProfile(
+            single=False, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
 
     @Decorator.markdown(label=Type.QUOTE)
-    def add_quote(self, text: str, *, single: bool = True, space: bool = False, end: bool = True):
+    def add_quote(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
         """add quote
         """
-        return text, single, space, end
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
 
     @Decorator.markdown(label=Type.SPLIT_LINE)
-    def add_split_line(self, *, single: bool = True, space: bool = False, end: bool = True):
+    def add_split_line(self):
         """add split line
         """
-        text = ''
-        return text, single, space, end
+        return LabelProfile(
+            single=True, text="",
+            space=SpaceLabel(tab=0, space=0, count=0),
+            end=EndLabel(linefeed=2),
+            args=None)
+
+    @Decorator.markdown(label=Type.UNORDERED_LIST)
+    def add_unordered_list(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 1):
+        """add unordered list
+        """
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=None)
+
+    # todo: make it easier to use
+    @Decorator.markdown(label=Type.ORDERED_LIST)
+    def add_ordered_list(self, index: float = '1', text: str = '',
+                         tab: int = 0, space: int = 1, count: int = 0,
+                         linefeed: int = 1):
+        """add ordered list
+        """
+        if not isinstance(index, float) and not isinstance(index, int):
+            raise TypeError(f"index: {index} type is not float or int.")
+
+        return LabelProfile(
+            single=True, text=text,
+            space=SpaceLabel(tab=tab, space=space, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=index)
 
     @Decorator.markdown(label=Type.IMAGE)
-    def add_image(self, url: str = '', *, alt: str = 'image', title: str = ''):
+    def add_image(self, url: str = '', *, alt: str = 'image_alt', title: str = 'image_title'):
         """add image
         """
-        text = ''
-        single = True
-        space = False
-        end = True
-        return text, single, space, end, (url, alt, title)
+        return LabelProfile(
+            single=True, text="",
+            space=SpaceLabel(tab=0, space=0, count=0),
+            end=EndLabel(linefeed=2),
+            args=(url, alt, title))
+
+    @Decorator.markdown(label=Type.URL)
+    def add_url(self, url: str = '', *, title: str = 'url_title',
+                tab: int = 0, count: int = 0, linefeed: int = 2):
+        """add url
+        """
+        return LabelProfile(
+            single=True, text="",
+            space=SpaceLabel(tab=tab, space=0, count=count),
+            end=EndLabel(linefeed=linefeed),
+            args=(url, title))
 
 
 if __name__ == "__main__":
     md = Markdown()
     md.add_h1("Title1")
-    md.add_text("Content will not change to new line.", end=False)
+    md.add_text("Content will not change to new line.")
     md.add_text("Content in the same line.")
     md.add_h2("Title2")
-    md.add_strikethrough("Content deprecated", end=True)
+    md.add_strikethrough("Content deprecated")
     md.add_split_line()
     md.add_h2("Title3")
-    md.add_quote("Quote content in this line.", end=False)
-    md.add_bold("Bold Content", end=True)
+    md.add_quote("Quote content in this line.", linefeed=0)
+    md.add_bold("Bold Content", linefeed=2)
     md.add_image(
         "https://timgsa.baidu.com/timg?image"
         "&quality=80&size=b9999_10000&sec=1600850864228"
@@ -198,4 +216,14 @@ if __name__ == "__main__":
         "&imgtype=0&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D159562664%2C875509196%26fm%3D214%26gp%3D0.jpg")
     md.add_image("https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2931826153,3045777172&fm=26&gp=0.jpg",
                  alt="hello", title="image")
+    md.add_url("https://www.google.com", title='google')
+    md.add_unordered_list("unordered list point 1")
+    md.add_unordered_list("unordered list point 2")
+    md.add_unordered_list("unordered list point 3", linefeed=2)
+    md.add_ordered_list(index=1, text="ordered list point one")
+    md.add_ordered_list(index=2, text="ordered list point two", count=2)
+    md.add_ordered_list(2.1, text="dead beef", tab=3)
+    md.add_ordered_list(index=3, text="ordered list point three", count=2)
+    md.add_ordered_list(index=3.1, text="dead beef", tab=3)
+    md.add_ordered_list(index=4, text="ordered list point four", linefeed=2)
     md.export("test.md")

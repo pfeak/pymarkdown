@@ -18,6 +18,7 @@ class Type(Enum):
     H5 = "#####"
     H6 = "######"
     QUOTE = ">"
+    UNORDERED_LIST = "+"
 
     # Markdown double symbol
     BOLD = "**"
@@ -26,6 +27,8 @@ class Type(Enum):
     # Special symbol
     SPLIT_LINE = "---"
     IMAGE = '![REPLACE_ALT](REPLACE_URL REPLACE_TITLE)'
+    URL = '[REPLACE_TITLE](REPLACE_URL)'
+    ORDERED_LIST = "REPLACE_NUMBER."
 
     if platform.system() == "Windows":
         SEP = '\r\n'
