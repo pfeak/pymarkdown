@@ -171,14 +171,8 @@ class Markdown:
 
         tab = 0 if level < 1 else 3 * (level - 1)
 
-        if not isinstance(text, str):
-            raise TypeError(f"text: {text} type is not str.")
-
         if not isinstance(index, str) and not isinstance(index, float) and not isinstance(index, int):
             raise TypeError(f"index: {index} type is not str, float or int.")
-
-        if not isinstance(linefeed, int):
-            raise TypeError(f"linefeed: {linefeed} type is not int.")
 
         return LabelProfile(
             single=True, text=text,
@@ -233,5 +227,5 @@ if __name__ == "__main__":
     md.add_ordered_list(level=2, index=3.1, text="dead beef2")
     md.add_ordered_list(level=3, index="3.1.1", text="dead beef3")
     md.add_ordered_list(level=3, index="3.1.1", text="dead beef4")
-    md.add_ordered_list(level=1, index=4, text="ordered list point four", linefeed="abv")
+    md.add_ordered_list(level=1, index=4, text="ordered list point four", linefeed=2)
     md.export("test.md")
