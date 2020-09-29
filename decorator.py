@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Tuple
 
 from type import Type
 
@@ -48,7 +48,7 @@ class Decorator:
         profile: LabelProfile = func(context, *args, **kwargs)
         Decorator.__handle_content(
             context=context,
-            single=profile.single,
+            single=StructHandler.single(profile.single),
             tab=StructHandler.tab(profile.space.tab),
             label=LabelHandler.label(label, profile.args),
             space=StructHandler.space(profile.space.space),
@@ -76,6 +76,10 @@ class Decorator:
 class StructHandler:
     """Handle structure
     """
+
+    @staticmethod
+    def single(single: bool) -> bool:
+        return single
 
     @staticmethod
     def tab(tab: int) -> str:
@@ -107,12 +111,12 @@ class LabelHandler:
     """
 
     @staticmethod
-    def label(label: Type, args: Any) -> str:
+    def label(label: Type, command: Any) -> str:
         has_attr = hasattr(LabelHandler, f"label_{label.name.lower()}")
-        return getattr(LabelHandler, f"label_{label.name.lower()}")(command=args) if has_attr else label.value
+        return getattr(LabelHandler, f"label_{label.name.lower()}")(command=command) if has_attr else label.value
 
     @staticmethod
-    def label_image(command: ()):
+    def label_image(command: ()) -> str:
         url, alt, title = command
         url = url if url else ''
         alt = alt if alt else ''
@@ -122,7 +126,7 @@ class LabelHandler:
             .replace(' REPLACE_TITLE', title, 1)
 
     @staticmethod
-    def label_url(command: ()):
+    def label_url(command: ()) -> str:
         url, title = command
         url = url if url else ''
         title = title if title else ''
@@ -130,4 +134,6 @@ class LabelHandler:
 
     @staticmethod
     def label_ordered_list(command: int) -> str:
-        return Type.ORDERED_LIST.value.replace("REPLACE_NUMBER", str(command), 1)
+        args_type, index = command
+        replace_str = "REPLACE_NUMBER" if args_type == int else "REPLACE_NUMBER."
+        return Type.ORDERED_LIST.value.replace(replace_str, str(index), 1)

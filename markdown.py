@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 from decorator import Decorator, LabelProfile, SpaceLabel, EndLabel
 from type import Type
@@ -162,19 +163,28 @@ class Markdown:
 
     # todo: make it easier to use
     @Decorator.markdown(label=Type.ORDERED_LIST)
-    def add_ordered_list(self, index: float = '1', text: str = '',
-                         tab: int = 0, space: int = 1, count: int = 0,
-                         linefeed: int = 1):
+    def add_ordered_list(self, level: int = 0, index: Any = Any, text: str = '', linefeed: int = 1):
         """add ordered list
         """
-        if not isinstance(index, float) and not isinstance(index, int):
-            raise TypeError(f"index: {index} type is not float or int.")
+        if not isinstance(level, int):
+            raise TypeError(f"level: {level} type is not int.")
+
+        tab = 0 if level < 1 else 3 * (level - 1)
+
+        if not isinstance(text, str):
+            raise TypeError(f"text: {text} type is not str.")
+
+        if not isinstance(index, str) and not isinstance(index, float) and not isinstance(index, int):
+            raise TypeError(f"index: {index} type is not str, float or int.")
+
+        if not isinstance(linefeed, int):
+            raise TypeError(f"linefeed: {linefeed} type is not int.")
 
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=tab, space=1, count=2),
             end=EndLabel(linefeed=linefeed),
-            args=index)
+            args=(type(index), index))
 
     @Decorator.markdown(label=Type.IMAGE)
     def add_image(self, url: str = '', *, alt: str = 'image_alt', title: str = 'image_title'):
@@ -209,21 +219,19 @@ if __name__ == "__main__":
     md.add_h2("Title3")
     md.add_quote("Quote content in this line.", linefeed=0)
     md.add_bold("Bold Content", linefeed=2)
-    md.add_image(
-        "https://timgsa.baidu.com/timg?image"
-        "&quality=80&size=b9999_10000&sec=1600850864228"
-        "&di=a9ef2aeb8fa4b61feb965a806cf3e69f"
-        "&imgtype=0&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D159562664%2C875509196%26fm%3D214%26gp%3D0.jpg")
+    md.add_image("https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2931826153,3045777172&fm=26&gp=0.jpg")
     md.add_image("https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2931826153,3045777172&fm=26&gp=0.jpg",
                  alt="hello", title="image")
     md.add_url("https://www.google.com", title='google')
     md.add_unordered_list("unordered list point 1")
     md.add_unordered_list("unordered list point 2")
     md.add_unordered_list("unordered list point 3", linefeed=2)
-    md.add_ordered_list(index=1, text="ordered list point one")
-    md.add_ordered_list(index=2, text="ordered list point two", count=2)
-    md.add_ordered_list(2.1, text="dead beef", tab=3)
-    md.add_ordered_list(index=3, text="ordered list point three", count=2)
-    md.add_ordered_list(index=3.1, text="dead beef", tab=3)
-    md.add_ordered_list(index=4, text="ordered list point four", linefeed=2)
+    md.add_ordered_list(level=1, index=1, text="ordered list point one")
+    md.add_ordered_list(level=1, index=2, text="ordered list point two")
+    md.add_ordered_list(level=2, index=2.1, text="dead beef1")
+    md.add_ordered_list(level=1, index=3, text="ordered list point three")
+    md.add_ordered_list(level=2, index=3.1, text="dead beef2")
+    md.add_ordered_list(level=3, index="3.1.1", text="dead beef3")
+    md.add_ordered_list(level=3, index="3.1.1", text="dead beef4")
+    md.add_ordered_list(level=1, index=4, text="ordered list point four", linefeed="abv")
     md.export("test.md")
