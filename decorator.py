@@ -161,7 +161,6 @@ class Handler:
             return Type.URL.value.replace('REPLACE_URL', url, 1).replace('REPLACE_TITLE', title, 1)
 
         @staticmethod
-        def label_ordered_list(command: int) -> str:
-            args_type, index = command
-            replace_str = "REPLACE_NUMBER" if args_type == int else "REPLACE_NUMBER."
-            return Type.ORDERED_LIST.value.replace(replace_str, str(index), 1)
+        def label_ordered_list(command: Any) -> str:
+            replace_str = "REPLACE_NUMBER" if type(command) == int else "REPLACE_NUMBER."
+            return Type.ORDERED_LIST.value.replace(replace_str, str(command), 1)

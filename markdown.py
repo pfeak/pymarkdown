@@ -42,104 +42,107 @@ class Markdown:
         return self.__path + self.__export_name
 
     @Decorator.markdown(label=Type.NULL)
-    def add_text(self, text: str, *, tab: int = 0, space: int = 0, count: int = 0, linefeed: int = 2):
+    def add_text(self, text: str, *, tab: int = 0, count: int = 0, linefeed: int = 2):
         """add text
         """
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=tab, space=0, count=count),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
     @Decorator.markdown(label=Type.H1)
-    def add_h1(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
+    def add_h1(self, text: str, *, linefeed: int = 2):
         """add h1 label
         """
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=0, space=1, count=0),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
     @Decorator.markdown(label=Type.H2)
-    def add_h2(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
+    def add_h2(self, text: str, *, linefeed: int = 2):
         """add h2 label
         """
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=0, space=1, count=0),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
     @Decorator.markdown(label=Type.H3)
-    def add_h3(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
+    def add_h3(self, text: str, *, linefeed: int = 2):
         """add h3 label
         """
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=0, space=1, count=0),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
     @Decorator.markdown(label=Type.H4)
-    def add_h4(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
+    def add_h4(self, text: str, *, linefeed: int = 2):
         """add h4 label
         """
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=0, space=1, count=0),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
     @Decorator.markdown(label=Type.H5)
-    def add_h5(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
+    def add_h5(self, text: str, *, linefeed: int = 2):
         """add h5 label
         """
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=0, space=1, count=0),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
     @Decorator.markdown(label=Type.H6)
-    def add_h6(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
+    def add_h6(self, text: str, *, linefeed: int = 2):
         """add h6 label
         """
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=0, space=1, count=0),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
     @Decorator.markdown(label=Type.STRIKETHROUGH)
-    def add_strikethrough(self, text: str, *, tab: int = 0, space: int = 0, count: int = 0, linefeed: int = 2):
+    def add_strikethrough(self, text: str, *, tab: int = 0, count: int = 0, linefeed: int = 2):
         """add strikethrough label
         """
         return LabelProfile(
             single=False, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=tab, space=0, count=count),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
     @Decorator.markdown(label=Type.BOLD)
-    def add_bold(self, text: str, *, tab: int = 0, space: int = 0, count: int = 0, linefeed: int = 2):
+    def add_bold(self, text: str, *, tab: int = 0, count: int = 0, linefeed: int = 2):
         """add bold label
         """
         return LabelProfile(
             single=False, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=tab, space=0, count=count),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
     @Decorator.markdown(label=Type.QUOTE)
-    def add_quote(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 2):
+    def add_quote(self, text: str, *, level: int = 0, linefeed: int = 2):
         """add quote
         """
+        if not isinstance(level, int):
+            raise TypeError(f"level: {level} type is not int.")
+
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=0, space=1, count=0),
             end=EndLabel(linefeed=linefeed),
-            args=None)
+            args=level)
 
     @Decorator.markdown(label=Type.SPLIT_LINE)
     def add_split_line(self):
@@ -152,24 +155,23 @@ class Markdown:
             args=None)
 
     @Decorator.markdown(label=Type.UNORDERED_LIST)
-    def add_unordered_list(self, text: str, *, tab: int = 0, space: int = 1, count: int = 0, linefeed: int = 1):
+    def add_unordered_list(self, text: str, *, tab: int = 0, linefeed: int = 1):
         """add unordered list
         """
         return LabelProfile(
             single=True, text=text,
-            space=SpaceLabel(tab=tab, space=space, count=count),
+            space=SpaceLabel(tab=tab, space=1, count=0),
             end=EndLabel(linefeed=linefeed),
             args=None)
 
-    # todo: make it easier to use
     @Decorator.markdown(label=Type.ORDERED_LIST)
-    def add_ordered_list(self, level: int = 0, index: Any = Any, text: str = '', linefeed: int = 1):
+    def add_ordered_list(self, *, level: int = 0, index: Any = Any, text: str = '', linefeed: int = 1):
         """add ordered list
         """
         if not isinstance(level, int):
             raise TypeError(f"level: {level} type is not int.")
 
-        tab = 0 if level < 1 else 3 * (level - 1)
+        tab = 0 if level < 0 else 3 * level
 
         if not isinstance(index, str) and not isinstance(index, float) and not isinstance(index, int):
             raise TypeError(f"index: {index} type is not str, float or int.")
@@ -178,7 +180,7 @@ class Markdown:
             single=True, text=text,
             space=SpaceLabel(tab=tab, space=1, count=2),
             end=EndLabel(linefeed=linefeed),
-            args=(type(index), index))
+            args=index)
 
     @Decorator.markdown(label=Type.IMAGE)
     def add_image(self, url: str = '', *, alt: str = 'image_alt', title: str = 'image_title'):
@@ -220,12 +222,12 @@ if __name__ == "__main__":
     md.add_unordered_list("unordered list point 1")
     md.add_unordered_list("unordered list point 2")
     md.add_unordered_list("unordered list point 3", linefeed=2)
-    md.add_ordered_list(level=1, index=1, text="ordered list point one")
-    md.add_ordered_list(level=1, index=2, text="ordered list point two")
-    md.add_ordered_list(level=2, index=2.1, text="dead beef1")
-    md.add_ordered_list(level=1, index=3, text="ordered list point three")
-    md.add_ordered_list(level=2, index=3.1, text="dead beef2")
-    md.add_ordered_list(level=3, index="3.1.1", text="dead beef3")
-    md.add_ordered_list(level=3, index="3.1.1", text="dead beef4")
-    md.add_ordered_list(level=1, index=4, text="ordered list point four", linefeed=2)
+    md.add_ordered_list(level=0, index=1, text="ordered list point one")
+    md.add_ordered_list(level=0, index=2, text="ordered list point two")
+    md.add_ordered_list(level=1, index=2.1, text="dead beef1")
+    md.add_ordered_list(level=0, index=3, text="ordered list point three")
+    md.add_ordered_list(level=1, index=3.1, text="dead beef2")
+    md.add_ordered_list(level=2, index="3.1.1", text="dead beef3")
+    md.add_ordered_list(level=2, index="3.1.1", text="dead beef4")
+    md.add_ordered_list(level=0, index=4, text="ordered list point four", linefeed=2)
     md.export("test.md")
