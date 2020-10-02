@@ -30,9 +30,5 @@ class Type(Enum):
     URL = '[REPLACE_TITLE](REPLACE_URL)'
     ORDERED_LIST = "REPLACE_NUMBER."
 
-    if platform.system() == "Windows":
-        SEP = '\r\n'
-    elif platform.system() == "Linux":
-        SEP = '\n'
-    else:  # for mac os
-        SEP = '\r'
+    # Separation
+    SEP = '\n'
