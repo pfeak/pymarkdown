@@ -164,3 +164,7 @@ class Handler:
         def label_ordered_list(command: Any) -> str:
             replace_str = "REPLACE_NUMBER" if type(command) == int else "REPLACE_NUMBER."
             return Type.ORDERED_LIST.value.replace(replace_str, str(command), 1)
+
+        @staticmethod
+        def label_code(command: str) -> str:
+            return Type.CODE.value.replace('REPLACE_CODE', command, 1)

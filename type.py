@@ -6,6 +6,9 @@ from enum import Enum, unique
 class Type(Enum):
     """Markdown type
     """
+    # Separation
+    SEP = '\n'
+
     # Place holder
     NULL = ""
     SPACE = " "
@@ -29,6 +32,4 @@ class Type(Enum):
     IMAGE = '![REPLACE_ALT](REPLACE_URL REPLACE_TITLE)'
     URL = '[REPLACE_TITLE](REPLACE_URL)'
     ORDERED_LIST = "REPLACE_NUMBER."
-
-    # Separation
-    SEP = '\n'
+    CODE = '```REPLACE_CODE'

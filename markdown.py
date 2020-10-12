@@ -203,6 +203,19 @@ class Markdown:
             end=EndLabel(linefeed=linefeed),
             args=(url, title))
 
+    @Decorator.markdown(label=Type.CODE)
+    def add_code(self, language: str = '', *, linefeed: int = 1):
+        """add code
+        """
+        if not isinstance(language, str):
+            raise TypeError(f"language: {language} type is not str.")
+
+        return LabelProfile(
+            single=True, text="",
+            space=SpaceLabel(tab=0, space=0, count=0),
+            end=EndLabel(linefeed=linefeed),
+            args=language)
+
 
 if __name__ == "__main__":
     md = Markdown()
@@ -230,4 +243,9 @@ if __name__ == "__main__":
     md.add_ordered_list(level=2, index="3.1.1", text="dead beef3")
     md.add_ordered_list(level=2, index="3.1.1", text="dead beef4")
     md.add_ordered_list(level=0, index=4, text="ordered list point four", linefeed=2)
+    md.add_code("python")
+    # add p
+    md.add_text("import os")
+    md.add_text("print('hello world.')")
+    md.add_code(linefeed=2)
     md.export("test.md")
