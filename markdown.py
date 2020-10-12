@@ -244,8 +244,9 @@ if __name__ == "__main__":
     md.add_ordered_list(level=2, index="3.1.1", text="dead beef4")
     md.add_ordered_list(level=0, index=4, text="ordered list point four", linefeed=2)
     md.add_code("python")
-    # add p
     md.add_text("import os")
-    md.add_text("print('hello world.')")
+    md.add_text("import datetime"
+                "time_now = datetime.datetime.now()"
+                "print(time_now)", linefeed=1)
     md.add_code(linefeed=2)
     md.export("test.md")
