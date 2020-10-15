@@ -33,3 +33,7 @@ class Type(Enum):
     URL = '[REPLACE_TITLE](REPLACE_URL)'
     ORDERED_LIST = "REPLACE_NUMBER."
     CODE = '```REPLACE_CODE'
+
+    # Table
+    TABLE = ":-:"
+    TABLE_SPLIT = "|"

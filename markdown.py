@@ -2,6 +2,7 @@ import os
 from typing import Any
 
 from decorator import Decorator, LabelProfile, SpaceLabel, EndLabel
+from label_table import Table
 from type import Type
 
 
@@ -216,6 +217,19 @@ class Markdown:
             end=EndLabel(linefeed=linefeed),
             args=language)
 
+    @Decorator.markdown(label=Type.TABLE)
+    def table(self, table: Table):
+        """add table
+        """
+        if not isinstance(table, Table):
+            raise TypeError(f"table: {table} type is not Table.")
+
+        return LabelProfile(
+            single=True, text=table.get_content(),
+            space=SpaceLabel(tab=0, space=0, count=0),
+            end=EndLabel(linefeed=1),
+            args=None)
+
 
 if __name__ == "__main__":
     md = Markdown()
@@ -250,4 +264,17 @@ time_now = datetime.datetime.now()
 print(time_now)"""
     md.add_text(code, linefeed=1)
     md.add_code(linefeed=2)
+
+    table = Table(3, 3)
+    table.head(['姓名', '技能', '排行'])
+
+    # table.set_head(0, '姓名')
+    # table.set_head(1, '技能')
+    # table.set_head(2, '排行')
+    # table.set_value(0, 0, "刘备")
+    # table.set_value(1, 0, "张飞")
+    # table.set_value(2, 0, "关羽")
+    # table.resize(3, 4)
+    # md.table(table)
+
     md.export("test.md")

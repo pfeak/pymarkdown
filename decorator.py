@@ -168,3 +168,7 @@ class Handler:
         @staticmethod
         def label_code(command: str) -> str:
             return Type.CODE.value.replace('REPLACE_CODE', command, 1)
+
+        @staticmethod
+        def label_table(command: None) -> str:
+            return Type.NULL.value
