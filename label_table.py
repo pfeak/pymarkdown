@@ -7,14 +7,14 @@ class Table:
     SPLIT_SYMBOL = F"{Type.TABLE.value}"
 
     def __init__(self, row: int = 2, col: int = 2):
-        self.__set_row(row)
-        self.__set_col(col)
+        self.__set_row_count(row)
+        self.__set_col_count(col)
 
         self.__head = [''] * col
         self.__split = [self.SPLIT_SYMBOL] * col
         self.__table = [[''] * col for _ in range(row)]
 
-    def __set_row(self, row: int = 2):
+    def __set_row_count(self, row: int = 2):
         if not isinstance(row, int):
             raise TypeError(f"row: {row} type is not int")
 
@@ -23,7 +23,7 @@ class Table:
 
         self.__row = row
 
-    def __set_col(self, col: int = 2):
+    def __set_col_count(self, col: int = 2):
         if not isinstance(col, int):
             raise TypeError(f"col: {col} type is not int")
 
@@ -91,8 +91,8 @@ class Table:
          for i in range(self.__row if self.__row < row else row)
          for j in range(self.__col if self.__col < col else col)]
 
-        self.__set_row(row)
-        self.__set_col(col)
+        self.__set_row_count(row)
+        self.__set_col_count(col)
         self.__head = head
         self.__split = split
         self.__table = table
@@ -105,6 +105,25 @@ class Table:
             raise ValueError(f"head: {head} length must be lower than or equal to {self.__col}")
 
         [self.__head.__setitem__(i, head[i]) for i in range(len(head))]
+
+    def insert_row(self, index: int, row: list) -> None:
+        if not isinstance(index, int):
+            raise TypeError(f"index: {index} type is not int")
+
+        if not isinstance(row, list):
+            raise TypeError(f"row: {row} type is not list")
+
+        if index < 0:
+            raise ValueError(f"index: {index} length must be larger than 0")
+
+        if index > self.__row:
+            raise ValueError(f"index: {index} length must be lower than or equal to {self.__col}")
+
+        if len(row) > self.__col:
+            raise ValueError(f"row: {row} length must be lower than or equal to {self.__col}")
+
+        for i, val in enumerate(row):
+            self.__table[index].__setitem__(i, val)
 
     def set_head(self, col: int = 0, text: str = '') -> None:
         if not isinstance(col, int):
